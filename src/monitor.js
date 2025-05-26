@@ -16,7 +16,8 @@ const SCREENSHOTS_DIR = path.join(__dirname, '..', 'screenshots');
 
 // Define the region to capture (will need to be adjusted based on screen)
 // These values should be configured based on your screen resolution
-const RARITY_REGION = new Region(850, 400, 200, 60); // x, y, width, height
+// Positioned at bottom of screen, wider horizontally for better OCR capture
+const RARITY_REGION = new Region(200, 800, 800, 200); // x, y, width, height
 
 /**
  * Ensures the screenshots directory exists
@@ -102,15 +103,28 @@ async function captureRarityRegion() {
   try {
     console.log('Capturing rarity region...');
     
-    // Capture the screen region using nut-tree-fork
-    const screenshot = await screen.grabRegion(RARITY_REGION);
-    const buffer = await screenshot.toBuffer();
+    // Ensure screenshots directory exists
+    await ensureScreenshotsDir();
     
-    // Save screenshot with timestamp for debugging
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    const screenshotPath = path.join(SCREENSHOTS_DIR, `capture-${timestamp}.png`);
-    await fs.writeFile(screenshotPath, buffer);
-    console.log(`Screenshot saved to: ${screenshotPath}`);
+    // Use a consistent filename that gets overwritten each time
+    const screenshotPath = path.join(SCREENSHOTS_DIR, 'current-capture.png');
+    console.log(`Saving screenshot to: ${screenshotPath}`);
+    
+    // Use screen.captureRegion to save the image directly to file
+    await screen.captureRegion(screenshotPath, RARITY_REGION);
+    console.log(`Screenshot saved successfully`);
+    console.log(`Capture region: x=${RARITY_REGION.left}, y=${RARITY_REGION.top}, width=${RARITY_REGION.width}, height=${RARITY_REGION.height}`);
+    
+    // Verify the file exists before trying to read it
+    try {
+      await fs.access(screenshotPath);
+      console.log('Screenshot file verified to exist');
+    } catch (accessError) {
+      throw new Error(`Screenshot file was not created at ${screenshotPath}`);
+    }
+    
+    // Read the saved file to return as buffer for OCR
+    const buffer = await fs.readFile(screenshotPath);
     
     console.log('Screenshot captured successfully');
     return buffer;
