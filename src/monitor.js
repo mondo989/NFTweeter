@@ -1,4 +1,4 @@
-const { screen, Region, keyboard, Key } = require('@nut-tree-fork/nut-js');
+const { screen, Region, keyboard, Key, mouse, Button } = require('@nut-tree-fork/nut-js');
 const fs = require('fs').promises;
 const path = require('path');
 require('dotenv').config();
@@ -133,6 +133,37 @@ async function captureRarityRegion() {
 }
 
 /**
+ * Clicks on the NFT at the bottom-left area of the page
+ * @returns {Promise<void>}
+ */
+async function clickOnNFT() {
+  try {
+    console.log('Moving mouse to NFT location and clicking...');
+    
+    // Get screen dimensions to calculate bottom-left position
+    const screenWidth = await screen.width();
+    const screenHeight = await screen.height();
+    
+    // Position slightly from bottom and left (adjust these values as needed)
+    const clickX = Math.floor(screenWidth * 0.30); // 20% from left
+    const clickY = Math.floor(screenHeight * 0.85); // 80% from top (near bottom)
+    
+    console.log(`Clicking at position: x=${clickX}, y=${clickY}`);
+    
+    // Move mouse to position and click
+    await mouse.setPosition({ x: clickX, y: clickY });
+    await sleep(500); // Small delay to ensure mouse is positioned
+    await mouse.leftClick();
+    
+    console.log('NFT clicked successfully');
+    await sleep(2000); // Wait for page to load after click
+  } catch (error) {
+    console.error('Failed to click on NFT:', error.message);
+    throw error;
+  }
+}
+
+/**
  * Refreshes the OpenSea page
  * @returns {Promise<void>}
  */
@@ -193,6 +224,9 @@ async function monitor() {
         console.log('🎉 New sale detected!');
         console.log(`Previous number: #${lastSaleData.rarityNumber || 'N/A'}`);
         console.log(`New number: #${saleData.rarity}`);
+        
+        // Click on the NFT first
+        await clickOnNFT();
         
         // Generate tweet
         const tweetText = await generateTweet(saleData);
