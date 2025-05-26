@@ -17,12 +17,12 @@ async function generateTweet(saleData, nftUrl = '') {
   
   // In-code template for tweet generation
   const promptTemplate = `
-    Generate a short, engaging funny as Dave Chapelle about an NFT sale with these details, descibe it in a funny story:
+  Reference the URL attached ${nftUrl} View any traits and make comments about it. 
+  Generate an engaging funny tweet as Dave Chapelle about the NFT sale details, descibe it in a funny story about the NFT's appearance:
     - Collection: Apu Apustajas
-    - Rarity: #${rarity}
+    - Rarity: ${rarity}
     - Price: ${price} ${price !== 'N/A' ? 'ETH' : ''}
     - Time: Just now
-    ${nftUrl ? `- NFT URL: ${nftUrl}` : ''}
     
     Brand voice guidelines:
     - Excited comedic Dave Chapelle tone
@@ -31,10 +31,9 @@ async function generateTweet(saleData, nftUrl = '') {
     - Keep under 280 characters
     - Make it feel urgent/newsworthy
     - Don't use hashtags
-    ${nftUrl ? '- Include the NFT URL at the end' : ''}
     
-    Example format:
-    "🚨 APU #${rarity} just sold${price !== 'N/A' ? ` for ${price} ETH` : ''}! 🔥 Another rare Apu finds a new home! 🏠 ${nftUrl ? ` ${nftUrl}` : ''}"
+    Possible Example format:
+    Another APU NFT ${rarity} just sold${price !== 'N/A' ? ` for ${price} ETH` : ''}! 🔥 Another lovely Apu finds a new home! 🏠
     
     Generate a unique, engaging tweet following this style:
   `;
