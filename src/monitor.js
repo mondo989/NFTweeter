@@ -1,4 +1,4 @@
-const { screen, Region, keyboard, Key, mouse, Button } = require('@nut-tree-fork/nut-js');
+const { screen, Region, keyboard, Key, mouse, Button, clipboard, straightTo, Point } = require('@nut-tree-fork/nut-js');
 const fs = require('fs').promises;
 const path = require('path');
 require('dotenv').config();
@@ -44,7 +44,7 @@ async function openSafariToCollection() {
     await keyboard.releaseKey(Key.LeftSuper, Key.Space);
     await sleep(500);
     keyboard.config.autoDelayMs = 10;
-    await keyboard.type('Safari');
+    await keyboard.type('Chrome');
     await keyboard.pressKey(Key.Return);
     await keyboard.releaseKey(Key.Return);
     await sleep(2000);
@@ -134,7 +134,7 @@ async function captureRarityRegion() {
 
 /**
  * Clicks on the NFT at the bottom-left area of the page
- * @returns {Promise<void>}
+ * @returns {Promise<string>} - The URL of the clicked NFT
  */
 async function clickOnNFT() {
   try {
@@ -145,8 +145,8 @@ async function clickOnNFT() {
     const screenHeight = await screen.height();
     
     // Position slightly from bottom and left (adjust these values as needed)
-    const clickX = Math.floor(screenWidth * 0.30); // 20% from left
-    const clickY = Math.floor(screenHeight * 0.85); // 80% from top (near bottom)
+    const clickX = Math.floor(screenWidth * 0.33); // 30% from left
+    const clickY = Math.floor(screenHeight * 0.87); // 85% from top (near bottom)
     
     console.log(`Clicking at position: x=${clickX}, y=${clickY}`);
     
@@ -157,6 +157,35 @@ async function clickOnNFT() {
     
     console.log('NFT clicked successfully');
     await sleep(2000); // Wait for page to load after click
+
+    // Extract the URL to pass to chatgpt
+    await keyboard.pressKey(Key.LeftSuper, Key.L);
+    await keyboard.releaseKey(Key.LeftSuper, Key.L);
+    await sleep(500);
+    await keyboard.pressKey(Key.LeftSuper, Key.X);
+    await keyboard.releaseKey(Key.LeftSuper, Key.X);
+    await sleep(500);
+    await keyboard.pressKey(Key.Escape);
+    await keyboard.releaseKey(Key.Escape);
+    await sleep(500);
+
+    // Get URL from clipboard
+    const nftUrl = await clipboard.getContent();
+    console.log('Captured NFT URL:', nftUrl);
+
+    // Right click on the image to open context menu
+    await mouse.rightClick();
+    await sleep(1000); // Wait for context menu to appear
+    
+    // Move mouse slightly up and right to click on "Copy image" option in dropdown
+    const currentPos = await mouse.getPosition();
+    const newPos = new Point(currentPos.x + 12, currentPos.y - 100); // 50px right, 50px up
+    await mouse.move(straightTo(newPos));
+    await sleep(300);
+    await mouse.leftClick();
+    console.log('Clicked on copy image option');
+    
+    return nftUrl;
   } catch (error) {
     console.error('Failed to click on NFT:', error.message);
     throw error;
@@ -225,11 +254,11 @@ async function monitor() {
         console.log(`Previous number: #${lastSaleData.rarityNumber || 'N/A'}`);
         console.log(`New number: #${saleData.rarity}`);
         
-        // Click on the NFT first
-        await clickOnNFT();
+        // Click on the NFT first and get the URL
+        const nftUrl = await clickOnNFT();
         
-        // Generate tweet
-        const tweetText = await generateTweet(saleData);
+        // Generate tweet with all the data (price, rarity, URL)
+        const tweetText = await generateTweet(saleData, nftUrl);
         
         // Post tweet (using the compose window method for safety)
         await openTwitterCompose(tweetText);

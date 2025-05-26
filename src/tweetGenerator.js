@@ -9,9 +9,10 @@ const openai = new OpenAI({
 /**
  * Generates a tweet for an NFT sale using OpenAI
  * @param {Object} saleData - The sale data object
+ * @param {string} nftUrl - The URL of the NFT
  * @returns {Promise<string>} - The generated tweet text
  */
-async function generateTweet(saleData) {
+async function generateTweet(saleData, nftUrl = '') {
   const { rarity, price, timestamp } = saleData;
   
   // In-code template for tweet generation
@@ -21,6 +22,7 @@ async function generateTweet(saleData) {
     - Rarity: #${rarity}
     - Price: ${price} ${price !== 'N/A' ? 'ETH' : ''}
     - Time: Just now
+    ${nftUrl ? `- NFT URL: ${nftUrl}` : ''}
     
     Brand voice guidelines:
     - Excited but professional tone
@@ -29,29 +31,31 @@ async function generateTweet(saleData) {
     - Keep under 280 characters
     - Make it feel urgent/newsworthy
     - Use hashtags: #NFT #ApuApustajas #OpenSea
+    ${nftUrl ? '- Include the NFT URL at the end' : ''}
     
     Example format:
-    "🚨 APU #${rarity} just sold${price !== 'N/A' ? ` for ${price} ETH` : ''}! 🔥 Another rare Apu finds a new home! 🏠 #NFT #ApuApustajas #OpenSea"
+    "🚨 APU #${rarity} just sold${price !== 'N/A' ? ` for ${price} ETH` : ''}! 🔥 Another rare Apu finds a new home! 🏠 #NFT #ApuApustajas #OpenSea${nftUrl ? ` ${nftUrl}` : ''}"
     
     Generate a unique, engaging tweet following this style:
   `;
   
   try {
     console.log('Generating tweet for sale:', saleData);
+    console.log('NFT URL:', nftUrl);
     
     const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [
         {
           role: "system",
-          content: "You are a social media expert specializing in NFT sales announcements. Create engaging, concise tweets that drive excitement."
+          content: "You are a social media expert specializing in NFT sales announcements. Create engaging, concise tweets that drive excitement and include all provided information."
         },
         {
           role: "user",
           content: promptTemplate
         }
       ],
-      max_tokens: 100,
+      max_tokens: 150,
       temperature: 0.8,
     });
     
@@ -68,7 +72,7 @@ async function generateTweet(saleData) {
     console.error('Failed to generate tweet:', error.message);
     
     // Fallback tweet if OpenAI fails
-    const fallbackTweet = `🚨 APU #${rarity} just sold${price !== 'N/A' ? ` for ${price} ETH` : ''}! 🔥 #NFT #ApuApustajas #OpenSea`;
+    const fallbackTweet = `🚨 APU #${rarity} just sold${price !== 'N/A' ? ` for ${price} ETH` : ''}! 🔥 #NFT #ApuApustajas #OpenSea${nftUrl ? ` ${nftUrl}` : ''}`;
     console.log('Using fallback tweet:', fallbackTweet);
     return fallbackTweet;
   }
