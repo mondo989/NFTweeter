@@ -1,0 +1,23 @@
+{
+  "name": "nftwatcher",
+  "version": "1.0.0",
+  "description": "NFT Sales Twitter Bot - Monitors OpenSea collections for sales and posts tweets",
+  "main": "src/monitor.js",
+  "scripts": {
+    "start": "node src/monitor.js",
+    "test-capture": "node test-capture.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "@nut-tree-fork/nut-js": "latest",
+    "tesseract.js": "latest",
+    "openai": "^4.24.1",
+    "dotenv": "^16.3.1"
+  },
+  "keywords": ["nft", "twitter", "bot", "opensea", "automation"],
+  "author": "",
+  "license": "ISC"
+}
