@@ -49,17 +49,16 @@ async function postTweet(tweetText) {
 }
 
 /**
- * Alternative method: Opens Twitter compose in default browser
+ * Alternative method: Opens Twitter compose and pastes image
  * @param {string} tweetText - The text to tweet
  * @returns {Promise<void>}
  */
 async function openTwitterCompose(tweetText) {
   try {
     console.log('Opening Twitter compose window...');
+    console.log('Tweet text to post:', tweetText);
     
-    // URL encode the tweet text
-    const encodedTweet = encodeURIComponent(tweetText);
-    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodedTweet}`;
+    const twitterUrl = `https://twitter.com/`;
     
     // Open URL in default browser
     exec(`open "${twitterUrl}"`, (error) => {
@@ -69,6 +68,34 @@ async function openTwitterCompose(tweetText) {
       }
       console.log('Twitter compose window opened in browser');
     });
+    
+    // Wait for the page to load completely
+    await sleep(5000);
+
+    // Press 'N' to open new tweet compose
+    await keyboard.pressKey(Key.N);
+    await keyboard.releaseKey(Key.N);
+    await sleep(1000); // Wait for compose window to open
+    
+    // Paste the OpenAI-generated tweet text first
+    console.log('Typing tweet text...');
+    await keyboard.type(tweetText);
+    await sleep(1000);
+    
+    // Add a space and then paste the image
+    console.log('Adding space and pasting image...');
+    await keyboard.type(' '); // Add space between text and image
+    await sleep(300);
+    
+    // Paste the copied image (Cmd+V) - this preserves the image in clipboard
+    console.log('Pasting copied image into tweet...');
+    await keyboard.pressKey(Key.LeftSuper, Key.V);
+    await keyboard.releaseKey(Key.LeftSuper, Key.V);
+    await sleep(2000); // Wait for image to upload
+    
+    console.log('✅ Tweet text pasted successfully!');
+    console.log('✅ Image pasted into tweet successfully!');
+    console.log('🎯 Tweet is ready - you can review and post manually');
     
   } catch (error) {
     console.error('Failed to open Twitter compose:', error.message);
