@@ -17,7 +17,7 @@ const SCREENSHOTS_DIR = path.join(__dirname, '..', 'screenshots');
 // Define the region to capture (will need to be adjusted based on screen)
 // These values should be configured based on your screen resolution
 // Positioned at bottom of screen, wider horizontally for better OCR capture
-const RARITY_REGION = new Region(200, 800, 800, 200); // x, y, width, height
+const RARITY_REGION = new Region(200, 800, 1000, 200); // x, y, width, height
 
 /**
  * Ensures the screenshots directory exists
@@ -43,6 +43,7 @@ async function openSafariToCollection() {
     await keyboard.pressKey(Key.LeftSuper, Key.Space);
     await keyboard.releaseKey(Key.LeftSuper, Key.Space);
     await sleep(500);
+    keyboard.config.autoDelayMs = 10;
     await keyboard.type('Safari');
     await keyboard.pressKey(Key.Return);
     await keyboard.releaseKey(Key.Return);
