@@ -6,12 +6,18 @@
 function extractSaleData(ocrText) {
   console.log('Extracting sale data from OCR text:', ocrText);
   
-  // Extract rarity number - looking for patterns like "#1234" or just "1234"
-  const rarityMatch = ocrText.match(/#?(\d+)/);
-  const rarityNumber = rarityMatch ? parseInt(rarityMatch[1], 10) : null;
+  // Extract rarity number - specifically looking for patterns like "#2,093" or "#1234"
+  // This regex looks for # followed by digits with optional commas
+  const rarityMatch = ocrText.match(/#([\d,]+)/);
+  let rarityNumber = null;
   
-  if (!rarityNumber) {
-    console.warn('Could not extract rarity number from OCR text');
+  if (rarityMatch) {
+    // Remove commas and convert to integer
+    const numberString = rarityMatch[1].replace(/,/g, '');
+    rarityNumber = parseInt(numberString, 10);
+    console.log(`Found rarity number: #${rarityMatch[1]} -> ${rarityNumber}`);
+  } else {
+    console.warn('Could not find rarity number starting with # in OCR text');
   }
   
   // Extract price if available (looking for ETH values)

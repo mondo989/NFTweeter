@@ -104,11 +104,8 @@ async function captureRarityRegion() {
   try {
     console.log('Capturing rarity region...');
     
-    // Ensure screenshots directory exists
-    await ensureScreenshotsDir();
-    
-    // Use a consistent filename that gets overwritten each time
-    const screenshotPath = path.join(SCREENSHOTS_DIR, 'current-capture.png');
+    // Use a consistent filename in the root directory
+    const screenshotPath = path.join(__dirname, '..', 'current-capture.png');
     console.log(`Saving screenshot to: ${screenshotPath}`);
     
     // Use screen.captureRegion to save the image directly to file
@@ -180,6 +177,10 @@ async function monitor() {
       // Capture the rarity region
       const screenshot = await captureRarityRegion();
       
+      // Debug: Check what we're passing to OCR
+      console.log('Screenshot buffer type:', typeof screenshot);
+      console.log('Screenshot buffer length:', screenshot ? screenshot.length : 'null');
+      
       // Perform OCR with retry
       const ocrText = await extractTextWithRetry(screenshot);
       console.log('OCR Result:', ocrText);
@@ -190,8 +191,8 @@ async function monitor() {
       // Check if rarity has changed
       if (hasRarityChanged(saleData.rarity, lastSaleData.rarityNumber)) {
         console.log('🎉 New sale detected!');
-        console.log(`Previous rarity: #${lastSaleData.rarityNumber || 'N/A'}`);
-        console.log(`New rarity: #${saleData.rarity}`);
+        console.log(`Previous number: #${lastSaleData.rarityNumber || 'N/A'}`);
+        console.log(`New number: #${saleData.rarity}`);
         
         // Generate tweet
         const tweetText = await generateTweet(saleData);
@@ -205,7 +206,7 @@ async function monitor() {
         
       } else {
         console.log('No change detected');
-        console.log(`Current rarity: #${saleData.rarity || 'N/A'}`);
+        console.log(`Current number: #${saleData.rarity || 'N/A'}`);
       }
       
     } catch (error) {
