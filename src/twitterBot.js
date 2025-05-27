@@ -1,5 +1,9 @@
 const { keyboard, Key, clipboard } = require('@nut-tree-fork/nut-js');
 const { exec } = require('child_process');
+require('dotenv').config();
+
+// Get the OpenSea URL from environment or use default
+const OPENSEA_URL = process.env.OPENSEA_URL || 'https://opensea.io/collection/apuapustajas';
 
 /**
  * Posts a tweet using Safari automation
@@ -101,6 +105,20 @@ async function openTwitterCompose(tweetText) {
     await keyboard.releaseKey(Key.LeftSuper, Key.Return);
 
     console.log("tweet posted Jeet!")
+
+    await keyboard.pressKey(Key.LeftSuper, Key.L);
+    await keyboard.releaseKey(Key.LeftSuper, Key.L);
+    await sleep(500);
+
+    // Navigate back to OpenSea collection page
+    console.log('Navigating back to OpenSea collection page...');
+    keyboard.config.autoDelayMs = 10;
+    await keyboard.type(OPENSEA_URL);
+    await keyboard.pressKey(Key.Return);
+    await keyboard.releaseKey(Key.Return);
+    await sleep(2000); // Wait for page to load
+    console.log('✅ Successfully navigated back to OpenSea collection page');
+
     
   } catch (error) {
     console.error('Failed to open Twitter compose:', error.message);

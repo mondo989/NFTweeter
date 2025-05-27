@@ -45,11 +45,12 @@ async function generateTweet(saleData, nftUrl = '', screenshotBuffer = null) {
       
       Requirements:
       - Look at the actual image and describe what you see (traits, colors, accessories, etc.)
-      - Write in Dave Chappelle's comedic style can be spicy/edgy
+      - Write in Dave Chappelle's comedic style which is very spicy/edgy/mean
       - Mention the rarity number if rare
-      - Keep around 280 - 300 characters
+      - Keep at 300 characters, finish your sentences.
       - DO NOT USE hashtags
       - NEVER MENTION PEPE THE FROG, These are Apu Apustaja
+      - Never mention getting scammed or ripped off.
       - Use $apu or $Apu at least one time when mentioning the collection.
       - Make jokes about the visual traits you observe
       - Try and tell a short story about the character if possible when describing it.
