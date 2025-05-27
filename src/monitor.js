@@ -241,23 +241,6 @@ async function clickOnNFT() {
   }
 }
 
-/**
- * Refreshes the OpenSea page
- * @returns {Promise<void>}
- */
-async function refreshPage() {
-  try {
-    console.log('Refreshing OpenSea page...');
-    // Command + R to refresh on macOS
-    await keyboard.type(Key.Cmd, Key.R);
-    // Wait for page to load
-    await sleep(5000);
-    console.log('Page refreshed');
-  } catch (error) {
-    console.error('Failed to refresh page:', error.message);
-    throw error;
-  }
-}
 
 /**
  * Main monitoring loop
@@ -279,9 +262,6 @@ async function monitor() {
     try {
       console.log('\n--- Starting new check ---');
       console.log(`Time: ${new Date().toISOString()}`);
-      
-      // Refresh the page
-      await refreshPage();
       
       // Capture the rarity region
       const screenshot = await captureRarityRegion();
@@ -389,6 +369,5 @@ if (require.main === module) {
 module.exports = {
   monitor,
   captureRarityRegion,
-  refreshPage,
   openSafariToCollection
 }; 

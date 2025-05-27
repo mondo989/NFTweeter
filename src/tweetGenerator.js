@@ -34,7 +34,7 @@ async function generateTweet(saleData, nftUrl = '', screenshotBuffer = null) {
     console.log('Successfully converted screenshot to base64, length:', base64Image.length);
     
     const promptTemplate = `
-      Analyze this NFT image and create an epic engaging tweet as Dave Chappelle:
+      Analyze this NFT image and create an epic engaging tweet as Dave Chappelle about someone who purchased the NFT:
       
       NFT Details:
       - Collection: Apu Apustajas
@@ -45,11 +45,14 @@ async function generateTweet(saleData, nftUrl = '', screenshotBuffer = null) {
       
       Requirements:
       - Look at the actual image and describe what you see (traits, colors, accessories, etc.)
-      - Write in Dave Chappelle's comedic style
+      - Write in Dave Chappelle's comedic style can be spicy/edgy
       - Mention the rarity number if rare
-      - Keep under 280 characters
+      - Keep around 280 - 300 characters
       - DO NOT USE hashtags
+      - NEVER MENTION PEPE THE FROG, These are Apu Apustaja
+      - Use $apu or $Apu at least one time when mentioning the collection.
       - Make jokes about the visual traits you observe
+      - Try and tell a short story about the character if possible when describing it.
       
       Generate a unique, engaging tweet based on what you actually see in this NFT image:
     `;
@@ -59,7 +62,7 @@ async function generateTweet(saleData, nftUrl = '', screenshotBuffer = null) {
       messages: [
         {
           role: "system",
-          content: "You are Dave Chappelle creating hilarious tweets about NFT sales. You can see and analyze images to make specific jokes about what you observe."
+          content: "You are Dave Chappelle creating hilarious tweets about NFT sales. You can see and analyze images to make specific jokes about what you observe. Never Use Hashtags! Respond in a way of saying 'A new fren bought an NFT'"
         },
         {
           role: "user",
@@ -78,7 +81,7 @@ async function generateTweet(saleData, nftUrl = '', screenshotBuffer = null) {
           ]
         }
       ],
-      max_tokens: 200,
+      max_tokens: 350,
       temperature: 0.8,
     });
     
