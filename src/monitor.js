@@ -97,86 +97,90 @@ async function saveLastSale(rarityNumber) {
 }
 
 /**
- * Captures a screenshot of the rarity region
+ * Captures a screenshot of the rarity region for OCR text extraction
+ * This is COMPLETELY SEPARATE from the NFT details page capture
+ * Used only to detect rarity number changes on the collection page
  * @returns {Promise<Buffer>} - The screenshot buffer
  */
 async function captureRarityRegion() {
   try {
-    console.log('Capturing rarity region...');
+    console.log('Capturing rarity region for OCR text extraction...');
     
-    // Use a consistent filename in the root directory
-    const screenshotPath = path.join(__dirname, '..', 'current-capture.png');
-    console.log(`Saving screenshot to: ${screenshotPath}`);
+    // Use a specific filename for rarity region capture (separate from NFT details)
+    const rarityScreenshotPath = path.join(__dirname, '..', 'current-capture.png');
+    console.log(`Saving rarity region screenshot to: ${rarityScreenshotPath}`);
     
     // Use screen.captureRegion to save the image directly to file
-    await screen.captureRegion(screenshotPath, RARITY_REGION);
-    console.log(`Screenshot saved successfully`);
-    console.log(`Capture region: x=${RARITY_REGION.left}, y=${RARITY_REGION.top}, width=${RARITY_REGION.width}, height=${RARITY_REGION.height}`);
+    await screen.captureRegion(rarityScreenshotPath, RARITY_REGION);
+    console.log(`Rarity region screenshot saved successfully`);
+    console.log(`Rarity capture region: x=${RARITY_REGION.left}, y=${RARITY_REGION.top}, width=${RARITY_REGION.width}, height=${RARITY_REGION.height}`);
     
     // Verify the file exists before trying to read it
     try {
-      await fs.access(screenshotPath);
-      console.log('Screenshot file verified to exist');
+      await fs.access(rarityScreenshotPath);
+      console.log('Rarity region screenshot file verified to exist');
     } catch (accessError) {
-      throw new Error(`Screenshot file was not created at ${screenshotPath}`);
+      throw new Error(`Rarity region screenshot was not created at ${rarityScreenshotPath}`);
     }
     
     // Read the saved file to return as buffer for OCR
-    const buffer = await fs.readFile(screenshotPath);
+    const rarityBuffer = await fs.readFile(rarityScreenshotPath);
     
-    console.log('Screenshot captured successfully');
-    return buffer;
+    console.log('Rarity region screenshot captured successfully for OCR');
+    console.log(`Rarity buffer size: ${rarityBuffer.length} bytes`);
+    return rarityBuffer;
   } catch (error) {
-    console.error('Failed to capture screenshot:', error.message);
+    console.error('Failed to capture rarity region screenshot:', error.message);
     throw error;
   }
 }
 
 /**
- * Captures a screenshot of the NFT image area for AI analysis
+ * Captures a screenshot of the NFT details page for AI analysis
+ * Captures almost full page excluding top 30% (browser UI, navigation, etc.)
  * @returns {Promise<Buffer>} - The screenshot buffer
  */
-async function captureNFTImage() {
+async function captureNFTDetailsPage() {
   try {
-    console.log('Capturing NFT image for AI analysis...');
+    console.log('Capturing NFT details page for AI analysis...');
     
-    // Define region for NFT image (center of page where NFT and traits are displayed)
-    // Adjust these coordinates based on where the NFT image appears on the page
-    const screenWidth = await screen.width();
-    const screenHeight = await screen.height();
+    // Get screen dimensions for full page capture (excluding top 30%)
+    const fullScreenWidth = await screen.width();
+    const fullScreenHeight = await screen.height();
     
-    // Center region - horizontally centered, middle vertically
-    const centerX = Math.floor(screenWidth * 0.25); // Start from 25% from left
-    const centerY = Math.floor(screenHeight * 0.25); // Start from 25% from top
-    const regionWidth = Math.floor(screenWidth * 0.5); // 50% of screen width
-    const regionHeight = Math.floor(screenHeight * 0.5); // 50% of screen height
+    // Capture almost full page, excluding top 30% (browser UI, navigation)
+    const startX = 0; // Start from left edge
+    const startY = Math.floor(fullScreenHeight * 0.3); // Start from 30% down (skip browser UI)
+    const captureWidth = fullScreenWidth; // Full width
+    const captureHeight = Math.floor(fullScreenHeight * 0.7); // 70% of screen height
     
-    const NFT_IMAGE_REGION = new Region(centerX, centerY, regionWidth, regionHeight);
+    const NFT_DETAILS_REGION = new Region(startX, startY, captureWidth, captureHeight);
     
-    // Use a consistent filename for NFT image
-    const nftImagePath = path.join(__dirname, '..', 'current-nft-image.png');
-    console.log(`Saving NFT image to: ${nftImagePath}`);
+    // Use a completely separate filename for NFT details page
+    const nftDetailsPath = path.join(__dirname, '..', 'nft-details-page.png');
+    console.log(`Saving NFT details page screenshot to: ${nftDetailsPath}`);
     
-    // Use screen.captureRegion to save the NFT image
-    await screen.captureRegion(nftImagePath, NFT_IMAGE_REGION);
-    console.log(`NFT image saved successfully`);
-    console.log(`NFT image region: x=${NFT_IMAGE_REGION.left}, y=${NFT_IMAGE_REGION.top}, width=${NFT_IMAGE_REGION.width}, height=${NFT_IMAGE_REGION.height}`);
+    // Capture the NFT details page region
+    await screen.captureRegion(nftDetailsPath, NFT_DETAILS_REGION);
+    console.log(`NFT details page screenshot saved successfully`);
+    console.log(`NFT details capture region: x=${NFT_DETAILS_REGION.left}, y=${NFT_DETAILS_REGION.top}, width=${NFT_DETAILS_REGION.width}, height=${NFT_DETAILS_REGION.height}`);
     
     // Verify the file exists before trying to read it
     try {
-      await fs.access(nftImagePath);
-      console.log('NFT image file verified to exist');
+      await fs.access(nftDetailsPath);
+      console.log('NFT details page screenshot file verified to exist');
     } catch (accessError) {
-      throw new Error(`NFT image file was not created at ${nftImagePath}`);
+      throw new Error(`NFT details page screenshot was not created at ${nftDetailsPath}`);
     }
     
     // Read the saved file to return as buffer for AI analysis
-    const buffer = await fs.readFile(nftImagePath);
+    const detailsBuffer = await fs.readFile(nftDetailsPath);
     
-    console.log('NFT image captured successfully for AI analysis');
-    return buffer;
+    console.log('NFT details page captured successfully for AI analysis');
+    console.log(`NFT details buffer size: ${detailsBuffer.length} bytes`);
+    return detailsBuffer;
   } catch (error) {
-    console.error('Failed to capture NFT image:', error.message);
+    console.error('Failed to capture NFT details page:', error.message);
     throw error;
   }
 }
@@ -286,10 +290,10 @@ async function monitor() {
         // Click on the NFT first and get the URL
         const nftUrl = await clickOnNFT();
         
-        // Take a screenshot of the NFT image for AI analysis
-        console.log('Taking screenshot of NFT image for AI analysis...');
+        // Take a screenshot of the NFT details page for AI analysis
+        console.log('Taking screenshot of NFT details page for AI analysis...');
         await sleep(2000); // Wait for page to fully load
-        const nftScreenshot = await captureNFTImage(); // Use the new NFT image capture function
+        const nftScreenshot = await captureNFTDetailsPage(); // Capture almost full page excluding top 30%
         
         // Generate tweet with AI analysis of the NFT image
         const tweetText = await generateTweet(saleData, nftUrl, nftScreenshot);
