@@ -133,6 +133,55 @@ async function captureRarityRegion() {
 }
 
 /**
+ * Captures a screenshot of the NFT image area for AI analysis
+ * @returns {Promise<Buffer>} - The screenshot buffer
+ */
+async function captureNFTImage() {
+  try {
+    console.log('Capturing NFT image for AI analysis...');
+    
+    // Define region for NFT image (center of page where NFT and traits are displayed)
+    // Adjust these coordinates based on where the NFT image appears on the page
+    const screenWidth = await screen.width();
+    const screenHeight = await screen.height();
+    
+    // Center region - horizontally centered, middle vertically
+    const centerX = Math.floor(screenWidth * 0.25); // Start from 25% from left
+    const centerY = Math.floor(screenHeight * 0.25); // Start from 25% from top
+    const regionWidth = Math.floor(screenWidth * 0.5); // 50% of screen width
+    const regionHeight = Math.floor(screenHeight * 0.5); // 50% of screen height
+    
+    const NFT_IMAGE_REGION = new Region(centerX, centerY, regionWidth, regionHeight);
+    
+    // Use a consistent filename for NFT image
+    const nftImagePath = path.join(__dirname, '..', 'current-nft-image.png');
+    console.log(`Saving NFT image to: ${nftImagePath}`);
+    
+    // Use screen.captureRegion to save the NFT image
+    await screen.captureRegion(nftImagePath, NFT_IMAGE_REGION);
+    console.log(`NFT image saved successfully`);
+    console.log(`NFT image region: x=${NFT_IMAGE_REGION.left}, y=${NFT_IMAGE_REGION.top}, width=${NFT_IMAGE_REGION.width}, height=${NFT_IMAGE_REGION.height}`);
+    
+    // Verify the file exists before trying to read it
+    try {
+      await fs.access(nftImagePath);
+      console.log('NFT image file verified to exist');
+    } catch (accessError) {
+      throw new Error(`NFT image file was not created at ${nftImagePath}`);
+    }
+    
+    // Read the saved file to return as buffer for AI analysis
+    const buffer = await fs.readFile(nftImagePath);
+    
+    console.log('NFT image captured successfully for AI analysis');
+    return buffer;
+  } catch (error) {
+    console.error('Failed to capture NFT image:', error.message);
+    throw error;
+  }
+}
+
+/**
  * Clicks on the NFT at the bottom-left area of the page
  * @returns {Promise<string>} - The URL of the clicked NFT
  */
@@ -257,8 +306,13 @@ async function monitor() {
         // Click on the NFT first and get the URL
         const nftUrl = await clickOnNFT();
         
-        // Generate tweet with all the data (price, rarity, URL)
-        const tweetText = await generateTweet(saleData, nftUrl);
+        // Take a screenshot of the NFT image for AI analysis
+        console.log('Taking screenshot of NFT image for AI analysis...');
+        await sleep(2000); // Wait for page to fully load
+        const nftScreenshot = await captureNFTImage(); // Use the new NFT image capture function
+        
+        // Generate tweet with AI analysis of the NFT image
+        const tweetText = await generateTweet(saleData, nftUrl, nftScreenshot);
         
         // Post tweet (using the compose window method for safety)
         await openTwitterCompose(tweetText);

@@ -13,11 +13,17 @@
   },
   "dependencies": {
     "@nut-tree-fork/nut-js": "latest",
-    "tesseract.js": "latest",
+    "dotenv": "^16.3.1",
     "openai": "^4.24.1",
-    "dotenv": "^16.3.1"
+    "tesseract.js": "latest"
   },
-  "keywords": ["nft", "twitter", "bot", "opensea", "automation"],
+  "keywords": [
+    "nft",
+    "twitter",
+    "bot",
+    "opensea",
+    "automation"
+  ],
   "author": "",
   "license": "ISC"
 }
