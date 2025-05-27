@@ -20,7 +20,7 @@ async function postTweet(tweetText) {
     await sleep(500);
     await keyboard.type('Safari');
     await keyboard.type(Key.Return);
-    await sleep(2000);
+    await sleep(1000);
     
     // Open new tab and navigate to Twitter
     await keyboard.type(Key.Cmd, Key.T);
@@ -96,6 +96,11 @@ async function openTwitterCompose(tweetText) {
     console.log('✅ Tweet text pasted successfully!');
     console.log('✅ Image pasted into tweet successfully!');
     console.log('🎯 Tweet is ready - you can review and post manually');
+
+    await keyboard.pressKey(Key.LeftSuper, Key.Return);
+    await keyboard.releaseKey(Key.LeftSuper, Key.Return);
+
+    console.log("tweet posted Jeet!")
     
   } catch (error) {
     console.error('Failed to open Twitter compose:', error.message);

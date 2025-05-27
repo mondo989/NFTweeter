@@ -58,14 +58,22 @@ async function generateTweet(saleData, nftUrl = '') {
     });
     
     const tweet = completion.choices[0].message.content.trim();
-    console.log('Generated tweet with URL analysis:', tweet);
     
-    // Ensure tweet is under 280 characters
-    if (tweet.length > 280) {
-      return tweet.substring(0, 277) + '...';
+    // Remove quotes if they wrap the entire tweet
+    let cleanTweet = tweet;
+    if ((cleanTweet.startsWith('"') && cleanTweet.endsWith('"')) || 
+        (cleanTweet.startsWith("'") && cleanTweet.endsWith("'"))) {
+      cleanTweet = cleanTweet.slice(1, -1);
     }
     
-    return tweet;
+    console.log('Generated tweet with URL analysis:', cleanTweet);
+    
+    // Ensure tweet is under 280 characters
+    if (cleanTweet.length > 280) {
+      return cleanTweet.substring(0, 277) + '...';
+    }
+    
+    return cleanTweet;
   } catch (error) {
     console.error('Failed to generate tweet with URL analysis:', error.message);
     console.log('Falling back to basic tweet generation...');
@@ -98,8 +106,16 @@ async function generateTweet(saleData, nftUrl = '') {
       });
       
       const fallbackTweet = fallbackCompletion.choices[0].message.content.trim();
-      console.log('Generated fallback tweet:', fallbackTweet);
-      return fallbackTweet.length > 280 ? fallbackTweet.substring(0, 277) + '...' : fallbackTweet;
+      
+      // Remove quotes if they wrap the entire tweet
+      let cleanFallbackTweet = fallbackTweet;
+      if ((cleanFallbackTweet.startsWith('"') && cleanFallbackTweet.endsWith('"')) || 
+          (cleanFallbackTweet.startsWith("'") && cleanFallbackTweet.endsWith("'"))) {
+        cleanFallbackTweet = cleanFallbackTweet.slice(1, -1);
+      }
+      
+      console.log('Generated fallback tweet:', cleanFallbackTweet);
+      return cleanFallbackTweet.length > 280 ? cleanFallbackTweet.substring(0, 277) + '...' : cleanFallbackTweet;
       
     } catch (fallbackError) {
       console.error('Fallback tweet generation also failed:', fallbackError.message);

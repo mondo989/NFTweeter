@@ -47,7 +47,7 @@ async function openSafariToCollection() {
     await keyboard.type('Chrome');
     await keyboard.pressKey(Key.Return);
     await keyboard.releaseKey(Key.Return);
-    await sleep(2000);
+    await sleep(1000);
     
     // Open new tab
     await keyboard.pressKey(Key.LeftSuper, Key.L);
@@ -59,7 +59,7 @@ async function openSafariToCollection() {
     await keyboard.type(OPENSEA_URL);
     await keyboard.pressKey(Key.Return);
     await keyboard.releaseKey(Key.Return);
-    await sleep(5000); // Wait for page to load
+    await sleep(2000); // Wait for page to load
     
     console.log('Safari opened and navigated to collection');
   } catch (error) {
