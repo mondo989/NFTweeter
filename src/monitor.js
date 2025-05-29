@@ -226,17 +226,17 @@ async function clickOnNFT() {
     const nftUrl = await clipboard.getContent();
     console.log('Captured NFT URL:', nftUrl);
 
-    // Right click on the image to open context menu
-    await mouse.rightClick();
-    await sleep(1000); // Wait for context menu to appear
+    // // Right click on the image to open context menu
+    // await mouse.rightClick();
+    // await sleep(1000); // Wait for context menu to appear
     
-    // Move mouse slightly up and right to click on "Copy image" option in dropdown
-    const currentPos = await mouse.getPosition();
-    const newPos = new Point(currentPos.x + 12, currentPos.y - 100); // 50px right, 50px up
-    await mouse.move(straightTo(newPos));
-    await sleep(300);
-    await mouse.leftClick();
-    console.log('Clicked on copy image option');
+    // // Move mouse slightly up and right to click on "Copy image" option in dropdown
+    // const currentPos = await mouse.getPosition();
+    // const newPos = new Point(currentPos.x + 12, currentPos.y - 100); // 50px right, 50px up
+    // await mouse.move(straightTo(newPos));
+    // await sleep(300);
+    // await mouse.leftClick();
+    // console.log('Clicked on copy image option');
     
     return nftUrl;
   } catch (error) {

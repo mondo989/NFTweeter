@@ -26,12 +26,12 @@ async function postTweet(tweetText) {
     await keyboard.type(Key.Return);
     await sleep(1000);
     
-    // Open new tab and navigate to Twitter
-    await keyboard.type(Key.Cmd, Key.T);
-    await sleep(500);
-    await keyboard.type('twitter.com/compose/tweet');
-    await keyboard.type(Key.Return);
-    await sleep(3000); // Wait for page to load
+    // // Open new tab and navigate to Twitter
+    // await keyboard.type(Key.Cmd, Key.T);
+    // await sleep(500);
+    // await keyboard.type('twitter.com/compose/tweet');
+    // await keyboard.type(Key.Return);
+    // await sleep(3000); // Wait for page to load
     
     // Paste the tweet text
     await keyboard.type(Key.Cmd, Key.V);
@@ -95,7 +95,7 @@ async function openTwitterCompose(tweetText) {
     console.log('Pasting copied image into tweet...');
     await keyboard.pressKey(Key.LeftSuper, Key.V);
     await keyboard.releaseKey(Key.LeftSuper, Key.V);
-    await sleep(2000); // Wait for image to upload
+    await sleep(5000); // Wait for image to upload
     
     console.log('✅ Tweet text pasted successfully!');
     console.log('✅ Image pasted into tweet successfully!');
@@ -118,7 +118,6 @@ async function openTwitterCompose(tweetText) {
     await keyboard.releaseKey(Key.Return);
     await sleep(2000); // Wait for page to load
     console.log('✅ Successfully navigated back to OpenSea collection page');
-
     
   } catch (error) {
     console.error('Failed to open Twitter compose:', error.message);

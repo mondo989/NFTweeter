@@ -39,21 +39,20 @@ async function generateTweet(saleData, nftUrl = '', screenshotBuffer = null) {
       NFT Details:
       - Collection: Apu Apustajas
       - Rarity: #${rarity}
-      - Tell a joke about the Traits you can see in the image
       - Price: ${price} ${price !== 'N/A' ? 'ETH' : ''}
       - Time: Just now
       
       Requirements:
-      - Look at the actual image and describe what you see (traits, colors, accessories, etc.)
-      - Write in Dave Chappelle's comedic style which is very spicy/edgy/mean
-      - Mention the rarity number if rare
-      - Keep at 300 characters, finish your sentences.
-      - DO NOT USE hashtags
-      - NEVER MENTION PEPE THE FROG, These are Apu Apustaja
-      - Never mention getting scammed or ripped off.
+      - Describe the traits characteristics (traits, colors, accessories, etc.)
+      - Write in Dave Chappelle's comedic style that is uplifting and NFT project overall.
+      - Compare the traits to a real life person or a movie if applicable.
+      - Don't make a joke about it being overpriced but always mention the price in ETH.
+      - highlight the rarity number only if it's a low number which means its rare.
+      - Keep the content at 240 characters, no more than that.
+      - DO NOT USE hashtags, NEver mention shrek unless its the shrek traits
+      - NEVER MENTION PEPE THE FROG, only Apu Apustaja, Never respond you cannot see images directly, or you don't know who it is, even if you dont.
       - Use $apu or $Apu at least one time when mentioning the collection.
-      - Make jokes about the visual traits you observe
-      - Try and tell a short story about the character if possible when describing it.
+      - Try and tell a short story about the NFT based on the traits when describing it.
       
       Generate a unique, engaging tweet based on what you actually see in this NFT image:
     `;
@@ -63,7 +62,7 @@ async function generateTweet(saleData, nftUrl = '', screenshotBuffer = null) {
       messages: [
         {
           role: "system",
-          content: "You are Dave Chappelle creating hilarious tweets about NFT sales. You can see and analyze images to make specific jokes about what you observe. Never Use Hashtags! Respond in a way of saying 'A new fren bought an NFT'"
+          content: "You are Dave Chappelle creating hilarious tweets about NFT sales. Respond in a way of saying 'A new fren bought an NFT'"
         },
         {
           role: "user",
